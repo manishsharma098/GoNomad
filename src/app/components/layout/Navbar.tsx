@@ -1,4 +1,6 @@
-import { useRouterState } from "@tanstack/react-router";
+"use client";
+
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -8,7 +10,7 @@ import { LogoMark, Wordmark } from "./Logo";
 import { TransitionLink } from "./PageTransition";
 
 export function Navbar() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   // Close the phone menu as soon as a new page is showing.

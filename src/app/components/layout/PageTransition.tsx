@@ -1,4 +1,7 @@
-import { Link, useRouter, useRouterState } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -26,10 +29,14 @@ export function usePageTransition() {
   return useContext(TransitionContext);
 }
 
+function hrefFor(to: AppPath | "/destination/$tripId", params?: TripParams) {
+  return params ? `/destination/${params.tripId}` : to;
+}
+
 /** Wraps the app and plays a two-sided flip (doors from left + right) between pages. */
 export function PageTransitionProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = usePathname();
   const [phase, setPhase] = useState<Phase>("idle");
   const busy = useRef(false);
   const timers = useRef<number[]>([]);
@@ -38,7 +45,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
 
   const go = useCallback(
     (to: AppPath | "/destination/$tripId", params?: TripParams) => {
-      const target = params ? `/destination/${params.tripId}` : to;
+      const target = hrefFor(to, params);
       if (busy.current) return;
       if (target === pathname) {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -47,12 +54,9 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
       busy.current = true;
       setPhase("closing");
       timers.current.push(
-        window.setTimeout(async () => {
-          await router.navigate(
-            params ? { to: "/destination/$tripId", params } : { to },
-          );
+        window.setTimeout(() => {
+          router.push(target);
           window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
-          // hold closed a beat so the new page paints behind the doors
           timers.current.push(
             window.setTimeout(() => {
               setPhase("opening");
@@ -102,7 +106,7 @@ export function TransitionLink({
   className,
   children,
   onNavigate,
-  activeOptions,
+  activeOptions: _activeOptions,
   ...rest
 }: TransitionLinkProps) {
   const { go } = usePageTransition();
@@ -112,29 +116,9 @@ export function TransitionLink({
     onNavigate?.();
     go(to, params);
   };
-  const activity = activeOptions ? { activeOptions } : {};
-  if (params) {
-    return (
-      <Link
-        to="/destination/$tripId"
-        params={params}
-        className={className}
-        onClick={handleClick}
-        {...activity}
-        {...rest}
-      >
-        {children}
-      </Link>
-    );
-  }
+
   return (
-    <Link
-      to={to as AppPath}
-      className={className}
-      onClick={handleClick}
-      {...activity}
-      {...rest}
-    >
+    <Link href={hrefFor(to, params)} className={className} onClick={handleClick} {...rest}>
       {children}
     </Link>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 import { ArrowUpRight, Mail, MapPin, Phone, Star } from "lucide-react";
 import { useState, type FormEvent, type ReactNode } from "react";
 
