@@ -1,8 +1,9 @@
 "use client";
 
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
 
+import { FilterSelect } from "@/app/components/common/FilterSelect";
 import { Reveal } from "@/app/components/common/Reveal";
 import { SectionHeading } from "@/app/components/common/SectionLabel";
 import { TripCard } from "@/app/components/home/TripCard";
@@ -11,38 +12,6 @@ import { filterAndSortTrips, sortLabels, tripCountries, type TripSort } from "@/
 import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 6;
-
-function PillSelect<T extends string>({
-  value,
-  options,
-  onChange,
-  label,
-}: {
-  value: T;
-  options: { value: T; label: string }[];
-  onChange: (v: T) => void;
-  label: string;
-}) {
-  const current = options.find((o) => o.value === value)?.label ?? label;
-  return (
-    <label className="relative inline-flex h-13 cursor-pointer items-center gap-2 rounded-full border border-sand-strong bg-sand px-5 font-ui text-base font-medium text-ink transition-colors hover:bg-sand-strong">
-      <span className="sr-only">{label}</span>
-      <span>{current}</span>
-      <ChevronDown className="size-4" />
-      <select
-        className="absolute inset-0 cursor-pointer opacity-0"
-        value={value}
-        onChange={(e) => onChange(e.target.value as T)}
-      >
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
 
 export function DestinationTrips({ embedded = false }: { embedded?: boolean }) {
   const [category, setCategory] = useState<TripCategory>("All");
@@ -70,7 +39,7 @@ export function DestinationTrips({ embedded = false }: { embedded?: boolean }) {
 
   return (
     <section className={embedded ? "pb-24 md:pb-32" : "pt-40 pb-24 md:pt-52 md:pb-32"}>
-      <div className="mx-auto max-w-[1440px] px-5 md:px-20">
+      <div className={cn("mx-auto max-w-[1440px] px-5 md:px-20", embedded && "pt-10 md:pt-12")}>
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
           {embedded ? null : (
             <Reveal>
@@ -82,17 +51,20 @@ export function DestinationTrips({ embedded = false }: { embedded?: boolean }) {
               />
             </Reveal>
           )}
-          <Reveal delay={100} className="flex gap-3">
-            <PillSelect
+          <Reveal delay={100} className="flex flex-wrap gap-2">
+            <FilterSelect
               label="Country"
               value={country}
               onChange={(value) => {
                 setCountry(value);
                 setPage(1);
               }}
-              options={tripCountries(trips).map((c) => ({ value: c, label: c }))}
+              options={tripCountries(trips).map((c) => ({
+                value: c,
+                label: c === "All" ? "All countries" : c,
+              }))}
             />
-            <PillSelect
+            <FilterSelect
               label="Sort trips"
               value={sort}
               onChange={(value) => {
@@ -107,7 +79,7 @@ export function DestinationTrips({ embedded = false }: { embedded?: boolean }) {
           </Reveal>
         </div>
 
-        <div className="mt-10 flex gap-2 overflow-x-auto pb-1">
+        <div className="mt-5 flex gap-2 overflow-x-auto pb-1 md:flex-wrap md:overflow-visible">
           {tripCategories.map((item) => {
             const active = item === category;
             return (
@@ -116,7 +88,7 @@ export function DestinationTrips({ embedded = false }: { embedded?: boolean }) {
                 type="button"
                 onClick={() => pickCategory(item)}
                 className={cn(
-                  "shrink-0 rounded-full px-4 py-2 font-ui text-sm font-medium transition-colors",
+                  "inline-flex h-10 shrink-0 items-center rounded-full px-4 font-ui text-sm font-medium transition-colors",
                   active ? "bg-ink text-paper" : "bg-sand text-ink hover:bg-sand-strong",
                 )}
                 aria-pressed={active}

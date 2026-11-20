@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Mail, MapPin, Phone, Star } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Mail, MapPin, Phone, Star } from "lucide-react";
 import { useState, type FormEvent, type ReactNode } from "react";
 
 import { Reveal } from "@/app/components/common/Reveal";
@@ -24,14 +24,14 @@ const ways = [
   {
     icon: MapPin,
     label: "Office",
-    value: "14 Harbour Lane, Bristol, UK",
-    href: "https://www.google.com/maps/search/?api=1&query=14+Harbour+Lane,+Bristol,+UK",
+    value: "142 West 57th Street, NY",
+    href: "https://www.google.com/maps/search/?api=1&query=142+West+57th+Street,+New+York",
   },
   {
     icon: Phone,
     label: "Phone",
-    value: "+1 234 556-780",
-    href: "tel:+1234556780",
+    value: "+123 (456) 789-0",
+    href: "tel:+1234567890",
   },
   {
     icon: Mail,
@@ -43,6 +43,8 @@ const ways = [
 
 const fieldClass =
   "w-full rounded-xl bg-field px-4 py-3.5 font-ui text-base text-ink outline-none transition-shadow placeholder:text-ink-soft focus:ring-2 focus:ring-ink/20";
+
+const selectClass = `${fieldClass} appearance-none bg-none pr-12`;
 
 export function ContactSection() {
   const [sent, setSent] = useState(false);
@@ -153,28 +155,32 @@ export function ContactSection() {
                     />
                   </Field>
                   <Field label="Location of traveling">
-                    <select name="location" defaultValue="" required className={fieldClass}>
-                      <option value="" disabled>
-                        Enter your location
-                      </option>
-                      {locations.map((place) => (
-                        <option key={place} value={place}>
-                          {place}
+                    <SelectControl>
+                      <select name="location" defaultValue="" required className={selectClass}>
+                        <option value="" disabled>
+                          Enter your location
                         </option>
-                      ))}
-                    </select>
+                        {locations.map((place) => (
+                          <option key={place} value={place}>
+                            {place}
+                          </option>
+                        ))}
+                      </select>
+                    </SelectControl>
                   </Field>
                   <Field label="How many people">
-                    <select name="people" defaultValue="" required className={fieldClass}>
-                      <option value="" disabled>
-                        Enter people number
-                      </option>
-                      {groupSizes.map((size) => (
-                        <option key={size} value={size}>
-                          {size}
+                    <SelectControl>
+                      <select name="people" defaultValue="" required className={selectClass}>
+                        <option value="" disabled>
+                          Enter people number
                         </option>
-                      ))}
-                    </select>
+                        {groupSizes.map((size) => (
+                          <option key={size} value={size}>
+                            {size}
+                          </option>
+                        ))}
+                      </select>
+                    </SelectControl>
                   </Field>
                   <Field label="Message">
                     <textarea
@@ -242,6 +248,15 @@ export function ContactSection() {
         </div>
       </section>
     </>
+  );
+}
+
+function SelectControl({ children }: { children: ReactNode }) {
+  return (
+    <div className="relative">
+      {children}
+      <ChevronDown className="pointer-events-none absolute top-1/2 right-5 size-4 -translate-y-1/2 text-ink" />
+    </div>
   );
 }
 

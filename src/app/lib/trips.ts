@@ -3,7 +3,7 @@ import type { Trip } from "@/app/data/site";
 export type TripSort = "featured" | "price-asc" | "price-desc" | "rating" | "duration";
 
 export const sortLabels: Record<TripSort, string> = {
-  featured: "Sort By",
+  featured: "Featured",
   "price-asc": "Price: Low to High",
   "price-desc": "Price: High to Low",
   rating: "Top Rated",
