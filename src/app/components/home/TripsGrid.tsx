@@ -1,45 +1,13 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { FilterSelect } from "@/app/components/common/FilterSelect";
 import { Reveal } from "@/app/components/common/Reveal";
 import { SectionHeading } from "@/app/components/common/SectionLabel";
 import { trips } from "@/app/data/site";
 import { filterAndSortTrips, sortLabels, tripCountries, type TripSort } from "@/app/lib/trips";
 import { TripCard } from "./TripCard";
-
-function PillSelect<T extends string>({
-  value,
-  options,
-  onChange,
-  label,
-}: {
-  value: T;
-  options: { value: T; label: string }[];
-  onChange: (v: T) => void;
-  label: string;
-}) {
-  const current = options.find((o) => o.value === value)?.label ?? label;
-  return (
-    <label className="relative inline-flex h-13 cursor-pointer items-center gap-2 rounded-full border border-sand-strong bg-sand px-5 font-ui text-base font-medium text-ink transition-colors hover:bg-sand-strong">
-      <span className="sr-only">{label}</span>
-      <span>{current}</span>
-      <ChevronDown className="size-4" />
-      <select
-        className="absolute inset-0 cursor-pointer opacity-0"
-        value={value}
-        onChange={(e) => onChange(e.target.value as T)}
-      >
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
 
 export function TripsGrid({ limit }: { limit?: number }) {
   const [country, setCountry] = useState("All");
@@ -62,14 +30,17 @@ export function TripsGrid({ limit }: { limit?: number }) {
               text="120+ small-group trips in 40+ countries, led by local guides and limited to twelve travelers."
             />
           </Reveal>
-          <Reveal delay={100} className="flex gap-3">
-            <PillSelect
+          <Reveal delay={100} className="flex flex-wrap gap-2">
+            <FilterSelect
               label="Country"
               value={country}
               onChange={setCountry}
-              options={tripCountries(trips).map((c) => ({ value: c, label: c }))}
+              options={tripCountries(trips).map((c) => ({
+                value: c,
+                label: c === "All" ? "All countries" : c,
+              }))}
             />
-            <PillSelect
+            <FilterSelect
               label="Sort trips"
               value={sort}
               onChange={setSort}

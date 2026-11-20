@@ -56,7 +56,7 @@ export function Footer() {
           </div>
 
           <div className="md:justify-self-end md:w-full md:max-w-md">
-            <h3 className="text-xl text-ink">Subscribe our newsletter</h3>
+            <h3 className="text-xl text-ink">Subscribe to our newsletter</h3>
             <p className="mt-2 text-sm text-ink-soft">
               New departures, early-bird fares, and stories from the road. Sent once a month, never
               more.
@@ -99,9 +99,9 @@ export function Footer() {
                 </li>
               ))}
               <li>
-                <a href="mailto:info@gonomad.com" className="transition-colors hover:text-ink">
+                <TransitionLink to="/contact" className="transition-colors hover:text-ink">
                   Contact Us
-                </a>
+                </TransitionLink>
               </li>
             </Column>
           ))}

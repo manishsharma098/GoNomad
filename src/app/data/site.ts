@@ -213,7 +213,7 @@ export const footerColumns = [
     links: [
       { label: "Home", to: "/" as AppPath },
       { label: "About", to: "/about" as AppPath },
-      { label: "Trip", to: "/trips" as AppPath },
+      { label: "Trips", to: "/trips" as AppPath },
       { label: "Destination", to: "/destination" as AppPath },
       { label: "Blog", to: "/blog" as AppPath },
     ],
